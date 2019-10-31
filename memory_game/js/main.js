@@ -2,54 +2,84 @@ var cards = [
 	{
 	rank: "queen",
 	suit: "hearts",
-	cardImage: "images/queen-of-hearts.png"
+	cardImage: "images/queen-of-hearts.png",
+	position: null
 	},
 	{
 	rank: "queen",
 	suit: "diamonds",
-	cardImage: "images/queen-of-diamonds.png"
+	cardImage: "images/queen-of-diamonds.png",
+	position: null
 	},
 	{
 	rank: "king",
 	suit: "hearts",
-	cardImage: "images/king-of-hearts"
+	cardImage: "images/king-of-hearts.png",
+	position: null
 	},
 	{
 	rank: "king",
 	suit: "diamonds",
-	cardImage: "images/king-of-diamonds"
+	cardImage: "images/king-of-diamonds.png",
+	position: null
 	}
 ];
 
 var cardsInPlay = [];
+var itemFound = false;
 
+function createBoard() {
+	var cardToAdd;
+	for (let i = 0; i < cards.length; i++) {
+		cardToAdd = document.createElement("img");
+		cardToAdd.setAttribute("id", "Card " + i);
+		cardToAdd.setAttribute("src", "images/back.png");
+		cardToAdd.setAttribute("data-id", i);
+		cardToAdd.setAttribute("rank", cards[i].rank);
+		cardToAdd.setAttribute("suit", cards[i].suit);
+		cardToAdd.addEventListener("click", flipCard);
+		document.getElementById("game-board").appendChild(cardToAdd);
+
+	}
+}
 
 function checkForMatch(){
 		if (cardsInPlay[0].rank === cardsInPlay[1].rank) {
-			console.log("You found a match!");
+			window.alert ("You found a match!");
 		} else {
-			console.log("Sorry, try again.");
+			window.alert ("Sorry, try again...");
 		}	
 }
 
-function flipCard(cardId) {
-	
-	console.log("User flipped " + cards[cardId].rank);
-
-	cardsInPlay.push(cards[cardId]);
-
-	for (let i=0; i < cardsInPlay.length; i++){	
-		console.log("All cards in play " + cardsInPlay[i].cardImage);
-		console.log("All cards in play " + cardsInPlay[i].suit);
+function resetCards() {
+	for (let i = 0; i < cards.length; i++){
+		document.getElementById('Card ' + i).setAttribute("src", "images/back.png");
 	}
+}
 
+function flipCard() {
+	
+	var cardId = this.getAttribute("data-id");
+
+	this.setAttribute("src", cards[cardId].cardImage);
+	
+	itemFound = false;
+	for (let i = 0; i < cardsInPlay.length; i++){
+		if (cardsInPlay[i].rank === this.getAttribute("rank") && cardsInPlay[i].suit === this.getAttribute("suit")){
+			itemFound = true;
+		}
+	}		
+
+	if (itemFound === false) {
+		cardsInPlay.push(cards[cardId]);
+	}
+			
 	if (cardsInPlay.length === 2) {
 		checkForMatch();
+		//resetCards();
+		cardsInPlay = [];
 	}
 
 }
 
-flipCard(0);
-flipCard(1);
-
-
+createBoard();
